@@ -3,6 +3,7 @@ import urllib, ssl, http.cookiejar
 
 # Import Objects 
 from .initialize import initializer
+from socket import timeout
 
 class Requester:
     def __init__(self):
@@ -25,10 +26,16 @@ class Requester:
         urllib.request.install_opener(urllib.request.build_opener())
         try:
             # Returns 200
-            if initializer.nosslcheck :
+            if initializer.nosslcheck:
                 self.response = urllib.request.urlopen(self.req, context=self.ctx, timeout=5)
             else:
-                self.response = urllib.request.urlopen(self.req, timeout=5)
+                try:
+                    self.response = urllib.request.urlopen(self.req, timeout=5)
+                except timeout:
+                    self.response = 'Timeout error'
+                    self.htmltext = 'Timeout error'
+                    self.status_code = 0
+                    return
             # it will ignore any bad character without replacing it
             self.htmltext = self.response.read().decode('utf-8', 'ignore')
             self.status_code = 200
