@@ -238,7 +238,10 @@ class WPScan:
     def WPpluginsVersion(self):
         self.pluginsFoundVers = {}
         for pluginFound in self.pluginsFound:
-            requester.request(self.url+self.pluginPath+pluginFound+"/readme.txt", data=None)
+            try:
+                requester.request(self.url+self.pluginPath+pluginFound+"/readme.txt", data=None)
+            except Exception as e:
+                continue
             pluginVer = re.findall('Stable tag: (\d+\.\d+[\.\d+]*)', requester.htmltext)
             # Add plugin version
             if pluginVer : 
